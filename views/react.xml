@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+<template id="basic_snippet" name="Dynamic Snippet">
+       <section class="container dynamic_snippet_blog">
+           <div class="row">
+               <div class="col-md-12">
+                   <h1>Dynamic Snippet</h1>
+                   Total Products Sold: <span id="total_sold"/>
+               </div>
+           </div>
+       </section>
+    </template>
+</odoo>

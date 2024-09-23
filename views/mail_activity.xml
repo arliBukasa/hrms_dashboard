@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="hrms_dashboard.mail_activity_kanban" model="ir.ui.view">
+        <field name="name">hrms_dashboard.mail.activity.kanban.view</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+
+            <kanban class="o_kanban_mobile" default_group_by="user_id">
+                        <field name="user_id" string="Assigned to"/>
+                        <field name="date_deadline" string="Deadline"/>
+                        <field name="state"/>
+                        <templates>
+                            <t t-name="kanban-box">
+                                <div t-attf-class="oe_kanban_content oe_kanban_global_click o_kanban_get_form">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <strong><field name="summary" string="Activity name"/></strong>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <field name="user_id" string="Contact"/>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="text-muted">
+                                        <t t-if="record.date_deadline.raw_value and record.date_deadline.raw_value lt (new Date())" t-set="red">oe_kanban_text_red</t>
+                                        <span t-attf-class="#{red || ''}">
+                                            <i>
+                                                <field name="date_deadline"/>
+                                            </i>
+                                        </span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" t-att-alt="record.user_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+                                        <div class="pull-left" groups="base.group_user">
+                                            <field name="state" widget="kanban_state_selection"/>
+                                        </div>
+                                </div>
+                                </div>
+                            </t>
+                        </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="hrms_dashboard.mail_activity_calendar" model="ir.ui.view">
+        <field name="name">mail.activity.calendar.view</field>
+        <field name="model">mail.activity</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <calendar string="Activity" date_start="date_deadline" color="activity_type_id"  mode="month">
+                <field name="summary"/>
+                <field name="res_name"/>
+                <field name="user_id"/>
+                
+            </calendar>
+        </field>
+    </record>
+    <record id="hrms_dashboard.mail_activity_tree" model="ir.ui.view">
+        <field name="name">mail.activity.tree.view</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="date_deadline &lt; current_date">
+                <field name="summary"/>
+                <field name="user_id"/>
+                <field name="date_deadline"/>
+                <field name="create_user_id"/> 
+            </tree>
+        </field>
+    </record>
+    <record id="hrms_dashboard.mail_activity_search" model="ir.ui.view">
+        <field name="name">hrms_dashboard.mail.activity.search.view</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <search string="Activity">
+                <field name="res_model_id"/>
+                <field name="summary"/>
+                <field name="activity_type_id"/>
+                <separator/>
+                <filter string="My Activities" name="activities_my"
+                        domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Late Activities" name="activities_overdue"
+                        domain="[('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all records which has next action date is before today"/>
+                <filter string="Today Activities" name="activities_today"
+                        domain="[('date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Future Activities" name="activities_upcoming_all"
+                        domain="[('date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                        ]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Deadline" name="date_deadline" context="{'group_by': 'date_deadline'}"/>
+                    <filter string="State" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Created By" name="createdby" context="{'group_by': 'create_user_id'}"/>
+                    <filter string="Activity Type" name="activittype" context="{'group_by': 'activity_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="hrms_dashboard.mail_activity_form_popup" model="ir.ui.view">
+        <field name="name">hrms_dashboard.mail.activity.form.view</field>
+        <field name="model">mail.activity</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Log an Activity" create="false">
+                <sheet string="Activity">
+                    <header>
+                           <!--<field name="stage_id" widget="statusbar" clickable="True" options="{'fold_field': 'fold'}"/>-->
+                    </header>
+                    <group invisible="1">
+                        <field name="activity_category" invisible="1" />
+                        <field name="res_model" invisible="1"/>
+                        <field name="res_model_id" invisible="1"/>
+                        <field name="res_id" invisible="1"/>
+                        <field name="force_next" invisible="1"/>
+                        <field name="previous_activity_type_id"/>
+                        <field name="has_recommended_activities"/>
+                        <!--<field name="stage_id" invisible="1"/>-->
+                        
+                    </group>
+                    <group attrs="{'invisible': [('has_recommended_activities','=',False)]}">
+                        <div class="o_row">
+                            <strong>Recommended Activities</strong>
+                            <field name="recommended_activity_type_id" widget="selection_badge"
+                                domain="[('previous_type_ids', '=', previous_activity_type_id)]"
+                                nolabel="1"/>
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="activity_type_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="summary" placeholder="e.g. Discuss proposal"/>
+                        </group>
+                        <group>
+                            <field name="date_deadline"/>
+                            <field name="user_id"/>
+                           <!--<field name="ticket_id"/>-->
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Log a note..."/>
+                    <footer>
+                        <button string="Schedule" name="action_close_dialog"
+                            type="object" class="btn-primary"/>
+                        <button attrs="{'invisible': [('force_next', '=', True)]}" string="Mark as Done" name="action_done"
+                            type="object" class="btn-secondary"
+                            context="{'mail_activity_quick_update': True}"/>
+                        <button attrs="{'invisible': [('force_next', '=', True)]}" string="Done &amp; Schedule Next" name="action_done_schedule_next"
+                            type="object" class="btn-secondary"
+                            context="{'mail_activity_quick_update': True}"/>
+                        <button attrs="{'invisible': [('force_next', '=', False)]}" string="Done &amp; Launch Next" name="action_done_schedule_next"
+                            type="object" class="btn-secondary"
+                            context="{'mail_activity_quick_update': True}"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+<!--     <record id="hrms_dashboard.activity_stage_view_form" model="ir.ui.view">
+        <field name="name">activity.stage.form.view</field>
+        <field name="model">activity.stage</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/> 
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    
+                </sheet>
+                <div  class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"></field>
+                    <field name="message_ids" widget="mail_thread"></field>
+                </div>
+            </form>
+        </field>
+    </record> -->
+<!--     <record id="hrms_dashboard.activity_stage_action" model="ir.actions.act_window">
+        <field name="name">Activity Stage</field>
+        <field name="res_model">activity.stage</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record> -->
+
+    <record id="hrms_dashboard.mail_activity_action" model="ir.actions.act_window">
+        <field name="name">Activity</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('user_id', '=', uid),('res_model', 'in', ["crm.lead"])]</field>
+        <!--<field name="context">{'calendar_view_ref': 'hrms_dashboard.hrms_dashboard_mail_view_calendar'}</field> -->      
+        <field name="view_mode">calendar,tree,form,kanban</field>
+    </record>
+    <menuitem id="hrms_dashboard.root_email_menu" name="Mes activités "  sequence="2"/>
+    <menuitem id="hrms_dashboard.email_menu" name="Mes activités CRM " parent="hrms_dashboard.root_email_menu" sequence="1"/>
+    <menuitem id="hrms_dashboard.email_conf_menu" name="Cofiguration" parent="hrms_dashboard.root_email_menu" sequence="5"/>
+<!--     <menuitem
+      name="Mes activités"  
+      id="hrms_dashboard.menu_mail_activity"
+      action="hrms_dashboard.mail_activity_action"
+      parent="hrms_dashboard.root_email_menu"
+    /> 
+    <menuitem
+      name="Stages"  
+      id="menu_mail_activity_stage"
+      action="hrms_dashboard.activity_stage_action"
+      parent="hrms_dashboard.email_conf_menu"
+
+    />
+ -->
+</odoo>

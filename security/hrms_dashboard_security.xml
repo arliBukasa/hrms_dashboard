@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record model="ir.module.category" id="hrms_dashboard.module_category_hrms_dashboard">
+        <field name="name">HR Head of</field>
+        <field name="description">Manager of head of hr...</field>
+        <field name="sequence">3</field>
+    </record>
+	<record id="hrms_dashboard.group_hrms_dashboard_hrheadof" model="res.groups">
+        <field name="name">HR Headof Manager</field>
+        <field name="category_id" ref="hrms_dashboard.module_category_hrms_dashboard"/>
+        <field name="comment">seul cette utilisateur pourra voir les salaires headof .</field>
+	</record>
+	
+	<record id="hrms_dashboard.group_hrms_dashboard_hremployee" model="res.groups">
+        <field name="name">HR Headof employee</field>
+        <field name="category_id" ref="hrms_dashboard.module_category_hrms_dashboard"/>
+        <field name="comment">cette utilisateur ne pourra pas voir les salaires headof .</field>
+	</record>
+    <record id="hrms_dashboard.group_hrms_dashboard_dg" model="res.groups">
+        <field name="name">DG</field>
+        <field name="category_id" ref="hrms_dashboard.module_category_hrms_dashboard"/>
+        <field name="comment">cette utilisateur assume le poste de DG .</field>
+	</record>
+    <record id="hrms_dashboard.group_hrms_dashboard_legal" model="res.groups">
+        <field name="name">Legal</field>
+        <field name="category_id" ref="hrms_dashboard.module_category_hrms_dashboard"/>
+        <field name="comment">cette utilisateur gere les contract Client .</field>
+	</record>
+	 
+	 
+   
+    
+</odoo>

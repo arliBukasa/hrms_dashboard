@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="view_form_partner_contract" model="ir.ui.view">
+    <field name="name">partner.contract.form.view</field>
+    <field name="model">partner.contract</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <button name="action_confirm" string="Confirmer" type="object" states="draft" class="oe_highlight"/>
+                <button name="action_close" string="Cloturer" type="object" states="encours" class="oe_danger"/>
+                <button name="action_cancel" string="Annuler" type="object" states="cloture" />
+                <field name="state" widget="statusbar" />    
+            </header>
+            <sheet>
+                <group>
+                    <group>
+                        <field name="partner"/>
+                        <field name="datedebut"/>
+                        <field name="cout"/>
+                        <field name="datefin" attrs="{'invisible': [('state','not in',('cloture'))]}" />
+                    </group>
+                    <group>
+                        <field name="department_id"/>
+                        <field name="employe_encharge"/>
+                    </group>
+                </group>
+                <group string="Informations de gestion">    
+                    <field name="impacte_nr"/>
+                    <br/>
+                    <field name="motifs_nr" attrs="{'invisible': [('state','not in',('cloture'))]}"/>
+                    <field name="clause_sortie"/>
+                </group>
+                <notebook>
+                    <page string="information des préstations">
+                        <field name="prestation_ids" context = "{'contract_id':active_id}">
+                        <tree editable="bottom"  decoration-success="state == 'encours'" decoration-danger="state != 'encours'" >
+                            <field name="name" />
+                            <field name="datedebut" />
+                            <field name="datefin" />
+                            <field name="state" readonly="1"/>
+                            <field name="partner" invisible="1"/>
+                            <field name="contract_id" invisible="1"/>
+                        </tree>
+                        </field>
+                    </page>
+                </notebook>
+                
+            </sheet>
+            <div  class="oe_chatter">
+               
+            </div>
+        </form>
+    </field>
+</record>
+<record id="partner_contract_view_tree" model="ir.ui.view">
+    <field name="name">partner.contract.view</field>
+    <field name="model">partner.contract</field>
+    <field name="arch" type="xml">
+        <tree decoration-danger="state == 'cloture'" decoration-success="state == 'encours'">
+            <field name="partner"/>
+            <field name="state"/>
+            <field name="datedebut"/>
+            <field name="datefin"/>
+            <field name="department_id"/>
+            <field name="employe_encharge"/>    
+        </tree>
+    </field>
+</record>
+<record id= "partner_contract_act_window" model="ir.actions.act_window">
+    <field name="name">Contrats Partenaire</field>
+    <field name="res_model">partner.contract</field>
+    <field name="view_mode">tree,form</field>
+</record>
+<!-- Client.......................-->
+<record id="legal_partner_view_form" model="ir.ui.view">
+    <field name="name">legal.partner.form.view</field>
+    <field name="model">partner.partner</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+               <group>       
+                       <field name="name"/>
+                       <field name="contact"/>
+                       <field name="email" />       
+               </group> 
+            </sheet>
+        </form>
+    </field>
+</record>
+<record id="legal_partner_view_tree" model="ir.ui.view">
+    <field name="name">legal.partner.tree</field>
+    <field name="model">partner.partner</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="contact"/>
+            <field name="email" />     
+        </tree>
+    </field>
+</record>
+<record id="legal_partner_act_window" model="ir.actions.act_window">
+    <field name="name">Client</field>
+    <field name="res_model">partner.partner</field>
+    <field name="view_mode">tree,form</field> 
+</record>
+
+<!--Prestation ........................................-->
+<record id="legal_prestation_view_form" model="ir.ui.view">
+    <field name="name">legal.prestation.form.view</field>
+    <field name="model">partner.prestation</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <button name="action_close" string="Cloturer" type="object" states="encours" class="oe_highlight"/>
+                <field name="state" widget="statusbar" />    
+            </header>
+            <sheet>
+               <group>       
+                       <field name="name"/>
+                       <field name="datedebut" />
+                       <field name="datefin" />
+                       <field name="partner" />
+                       <field name="contract_id" />
+                              
+               </group> 
+            </sheet>
+        </form>
+    </field>
+</record>
+<record id="legal_prestation_view_tree" model="ir.ui.view">
+    <field name="name">legal.prestation.tree.view</field>
+    <field name="model">partner.prestation</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="datedebut" />
+            <field name="datefin" />
+            <field name="partner" />    
+        </tree>
+    </field>
+</record>
+<record id="legal_prestation_act_window" model="ir.actions.act_window">
+    <field name="name">Prestations</field>
+    <field name="res_model">partner.prestation</field>
+    <field name="context">{'group_by': 'contract_id'}</field>
+    <field name="view_mode">tree,form</field> 
+</record>
+<!--**************************-->
+<menuitem id="legal_root_menu"  name="Legal" sequence="2" web_icon="hrms_dashboard,static/description/legal.png"/>
+<menuitem id="legal_contract_menu" name="Contracts" action="hrms_dashboard.partner_contract_act_window" parent="hrms_dashboard.legal_root_menu" sequence="1"/>
+<menuitem id="legal_client_menu" name="Clients" action="hrms_dashboard.legal_partner_act_window" parent="hrms_dashboard.legal_root_menu" sequence="2"/>
+<menuitem id="legal_prestation_menu" name="Prestations" action="hrms_dashboard.legal_prestation_act_window" parent="hrms_dashboard.legal_root_menu" sequence="3"/>
+
+
+
+</odoo>

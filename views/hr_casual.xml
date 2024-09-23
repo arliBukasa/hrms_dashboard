@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_hr_casual" model="ir.ui.view">
+        <field name="name">hrms.casual.form.view</field>
+        <field name="model">hrms.casual</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_mobile"/>
+                        </group>
+                        <group>
+                            <field name="adresse"/>
+                            <field name="email_from"/>
+                        </group>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+    <record id="view_tree_hr_casual" model="ir.ui.view">
+        <field name="name">hrms.casual.tree.view</field>
+        <field name="model">hrms.casual</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_mobile"/>
+                <field name="adresse"/>
+                <field name="email_from"/>
+            </tree>
+        </field>
+    </record>
+    <record id="hr_casual_recrutement_view_form" model="ir.ui.view">
+        <field name="name">hrms.casual_recrutement.form.view</field>
+        <field name="model">hrms.casual.recrutement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <group>
+
+
+                        <group>
+                            <field name='name'/>
+                            <field name='date_debut'/>
+                            <field name='date_fin'/>
+                            <field name='position_id'/>
+                            <field name='client_id'/>
+                        </group>
+                        <group>
+                            <field name='lieu'/>
+                            <field name='responsable'/>
+                            <field name='remuneration'/>
+                            <field name='remuneration_totale'/>
+                            <field name='province'/>
+                            <field name='nombre_jours'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="candidats retenus">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="casual_id"/>
+                                    <field name='date_debut'/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+    <record id="hrms_casual_recrutement_view_tree" model="ir.ui.view">
+        <field name="name">hrms.casual_recrutement.tree.view</field>
+        <field name="model">hrms.casual.recrutement</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name='name'/>
+                <field name='date_debut'/>
+                <field name='position_id'/>
+                <field name='client_id'/>
+                <field name='lieu'/>
+                <field name='responsable'/>
+                <field name='remuneration'/>
+                <field name='remuneration_totale'/>
+                <field name='province'/>
+                <field name='nombre_jours'/>
+            </tree>
+        </field>
+    </record>
+    <record id="hrms_casual_recrutement_line_view_tree" model="ir.ui.view">
+        <field name="name">hrms_casual_recrutementline.tree</field>
+        <field name="model">hrms.casual.recrutementline</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name='casual_id'/>
+                <field name='date_debut'/>
+            </tree>
+        </field>
+    </record>
+    <!-- hrms.casual.recrutementline pivot view -->
+    <record id="hrms_casual_recrutement_line_view_pivot" model="ir.ui.view">
+        <field name="name">hrms.casual.recrutementline.view.pivot</field>
+        <field name="model">hrms.casual.recrutementline</field>
+        <field name="arch" type="xml">
+            <pivot string="Rapport casual">
+                <!-- Add your fields here -->
+                 <field name='client_id' type="col"/>
+                <field name='province' type="col"/>
+                <field name='position_id' type="col"/>
+                <field name='responsable' type="col"/>
+                <field name='recrutement_id' type="row"/>
+                <field name='casual_id' type="row"/>
+            </pivot>
+        </field>
+    </record>
+     <record id="hrms_casual_recrutementline_action" model="ir.actions.act_window">
+        <field name="name">Rapports Casual</field>
+        <field name="res_model">hrms.casual.recrutementline</field>
+        <field name="view_mode">pivot</field>
+    </record>
+
+    <record id="hrms_casual_action" model="ir.actions.act_window">
+        <field name="name">Casuals</field>
+        <field name="res_model">hrms.casual</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="hrms_casual_recrutement_action" model="ir.actions.act_window">
+        <field name="name">Casual recrutement</field>
+        <field name="res_model">hrms.casual.recrutement</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="recrutement_casual_menu" name="Casual management" action="" parent="hr_recruitment.menu_hr_recruitment_root" sequence="5"/>
+    <menuitem id="hrms_casuals_menu" name="Casuals" action="hrms_casual_action" parent="recrutement_casual_menu" sequence="1"/>
+    <menuitem id="hrms_casuals_recrutement_menu" name="Casual Recrutement" action="hrms_casual_recrutement_action" parent="recrutement_casual_menu" sequence="2"/>
+     <menuitem id="hrms_casuals_recrutement_line_menu" name="Rapport Casual" action="hrms_casual_recrutementline_action" parent="recrutement_casual_menu" sequence="3"/>
+</odoo>

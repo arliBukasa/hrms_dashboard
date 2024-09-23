@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_hr_applicant_candidate" model="ir.ui.view">
+        <field name="name">hr.applicant.candidate.form.view</field>
+        <field name="model">hr.applicant.candidate</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="postnom"/>
+                            <field name="prenom"/>
+                            <field name="age"/>
+                            <field name="annee_naissance"/>
+                            <field name="adresse"/>
+                            <field name="ville"/>
+                        </group>
+                        <group>
+                            <field name="email" widget="email"/>
+                            <field name="password" widget="password"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="langue_ids" widget="many2many">
+                            <tree>
+                                <field name="language_id"/>
+                                <field name="candidat_id"/>
+                                <field name="level"/>
+                                <field name="applicant_id"/>
+                            </tree>
+                        </field>
+                        <field name="experience_ids" widget="many2many">
+                            <tree>
+                                <field name="name"/>
+                                <field name="applicant_id"/>
+                                <field name="entreprise_id"/>
+                                <field name="taches"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                            </tree>
+                        </field>
+                        <field name="education_ids" widget="many2many">
+                            <tree>
+                                <field name="name"/>
+                                <field name="applicant_id"/>
+                                <field name="institution"/>
+                                <field name="qualification"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                            </tree>
+                        </field>
+                        <field name="formation_ids" widget="many2many">
+                            <tree>
+                                <field name="name"/>
+                                <field name="applicant_id"/>
+                                <field name="institution"/>
+                                <field name="qualification"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                            </tree>
+                        </field>
+                        <field name="competence_ids" widget="many2many">
+                            <tree>
+                            <field name="name"/>
+                            <field name="competence_id"/>
+                            <field name="level"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+    <record id="view_tree_hr_applicant_candidate" model="ir.ui.view">
+        <field name="name">hr.applicant.candidate.view</field>
+        <field name="model">hr.applicant.candidate</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="postnom"/>
+                <field name="prenom"/>
+                <field name="age"/>
+                <field name="annee_naissance"/>
+                <field name="adresse"/>
+                <field name="ville"/>
+                <field name="email" widget="email"/>
+                <field name="password" widget="password"/>
+                 <field name="langue_ids" widget="many2many_tags"/>
+                <field name="experience_ids" widget="many2many_tags"/>
+                 <field name="education_ids" widget="many2many_tags"/>
+                <field name="formation_ids" widget="many2many_tags"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_applicant_candidate_action" model="ir.actions.act_window">
+        <field name="name">Cadidate</field>
+        <field name="res_model">hr.applicant.candidate</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="recrutement_candidate_manage_menu" name="Cadidate management" action="" parent="hr_recruitment.menu_hr_recruitment_root" sequence="6"/>
+    <menuitem id="hrms_candidate_menu" name="Candidate" action="hr_applicant_candidate_action" parent="recrutement_candidate_manage_menu" sequence="1"/>
+</odoo>

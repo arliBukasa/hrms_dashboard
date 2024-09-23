@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_applicant_test_view_kanban" model="ir.ui.view">
+        <field name="name">hr.applicant.kanban.inherit</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_kanban_view_applicant"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//templates" position="before">
+                    <field name="email_from"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+    <!-- application form redesign -->
+    <record id="crm_case_form_view_job_revue" model="ir.ui.view">
+        <field name="name">Jobs - Recruitment Form</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.crm_case_form_view_job"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//sheet" position="replace">
+                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_makeMeeting" class="oe_stat_button" icon="fa-calendar" type="object"
+                                help="Schedule interview with this applicant">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Meetings</span>
+                                </div>
+                            </button>
+                            <button name="action_get_attachment_tree_view"
+                                class="oe_stat_button"
+                                icon="fa-book"
+                                type="object">
+                                <field name="attachment_number" widget="statinfo" string="Documents"/>
+                            </button>
+                            <button name="action_get_created_employee"
+                                class="oe_stat_button"
+                                icon="fa-user"
+                                type="object"
+                                attrs="{'invisible': [('emp_id', '=', False)]}">
+                                <field name="employee_name" widget="statinfo" string="Employee"/>
+                            </button>
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive"
+                                    attrs="{'invisible': [('active', '=', True)]}">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <field name="kanban_state" widget="kanban_state_selection"/>
+                        <field name="legend_normal" invisible="1"/>
+                        <field name="legend_blocked" invisible="1"/>
+                        <field name="legend_done" invisible="1"/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <h2 class="o_row">
+                                <div>
+                                    <label for="partner_name" class="oe_edit_only"/>
+                                    <field name="partner_name" class="oe_inline"/>
+                                    <field name="partner_last_name" class="oe_inline"/>
+                                    <field name="partner_first_name" class="oe_inline"/>
+
+                                </div>
+                                <div>
+                                    <label for="categ_ids" class="oe_edit_only"/>
+                                    <field name="categ_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                </div>
+                                 <div>
+                                     <group>
+                                         <group>
+                                             <label for="image"/>
+                                             <field name="image"  widget="image"/>
+                                         </group>
+                                     </group>
+                                </div>
+                            </h2>
+                        </div>
+                        <group>
+                               <!--*******************infos personnelles*****************************-->
+
+                                <field name="job_id"/>
+                                <field name="gender"/>
+                                <field name="email_from" widget="email"/>
+                                <field name="partner_phone"/>
+                                <field name="partner_mobile"/>
+                                <field name="type_id" placeholder="Degree" invisible="1"/>
+                                <field name="user_id" invisible="1"/>
+                                <field name="priority" widget="priority"/>
+                                
+                                <field name="medium_id" groups="base.group_no_one" />
+                                <field name="source_id"/>
+
+                            <!-- ***********************************job***********************-->
+                                 <field name="experience_ids">
+
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="entreprise_id"/>
+                                            <field name="taches"/>
+                                            <field name="date_debut"/>
+                                            <field name="date_fin"/>
+                                        </tree>
+                                </field>
+
+
+                                <field name="education_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="institution"/>
+                                        <field name="qualification"/>
+                                        <field name="date_debut"/>
+                                        <field name="date_fin"/>
+                                    </tree>
+                                </field>
+                                <field name="formation_ids">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="institution"/>
+                                            <field name="qualification"/>
+                                            <field name="date_debut"/>
+                                            <field name="date_fin"/>
+                                        </tree>
+                                    </field>
+
+                                <field name="company_id" groups="base.group_multi_company" options='{"no_open":True}' />
+                                <field name="department_id"/>
+                            <!--****************************** contact ***********************************-->
+
+                                <field name="langue_ids">
+                                <tree>
+                                    <field name="language_id" />
+                                    <field name="level"/>
+                                </tree>
+                                </field>
+                                 <field name="competence_ids">
+                                    <tree>
+                                        <field name="competence_id"/>
+                                        <field name="level"/>
+                                    </tree>
+                                </field>
+                                <field name="sector_ids"/>
+                                <label for="salary_expected"/>
+                                    <div>
+                                        <field name="salary_expected" class="oe_inline"/>
+                                        <span class="oe_inline" attrs="{'invisible':[('salary_expected_extra','=',False)]}"> + </span>
+                                        <field name="salary_expected_extra" class="oe_inline" placeholder="Extra advantages..."/>
+
+                                    </div>
+                                <label for="salary_proposed"/>
+                                <div>
+                                    <field name="salary_proposed" class="oe_inline"/>
+                                    <span class="oe_inline" attrs="{'invisible':[('salary_proposed_extra','=',False)]}"> + </span>
+                                    <field name="salary_proposed_extra" class="oe_inline" placeholder="Extra advantages..."/>
+                                </div>
+                                <label for="reference_ids"/>
+                                <field name="reference_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="telephone" />
+                                        <field name="entreprise_id" />
+                                        <field name="position" />
+                                    </tree>
+                                </field>
+                                 <field name="partner_id"/>
+                                <field name="availability"/>
+                                <field name="emp_id" invisible="1"/>
+
+                        </group>
+                        <separator string="Application Summary"/>
+                        <field name="description" placeholder="Feedback of interviews..."/>
+                    </sheet>
+                </xpath>
+            </data>
+        </field>
+    </record>
+       
+    <!-- the end of application form design-->
+     <!-- application search_view redesign -->
+     <record id="view_crm_case_jobs_filter_revue" model="ir.ui.view">
+        <field name="name">hr.applicant.view.search</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.view_crm_case_jobs_filter" />
+        <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//search" position="inside">
+                        <field name="experience_ids" filter_domain="['|','|',('experience_ids.name','ilike',self),('experience_ids.taches','ilike',self),('competence_ids.competence_id.name','ilike',self)]" string="expérience | compétence"/>
+                        <field name="langue_ids" filter_domain="[('langue_ids.language_id.name','ilike',self)]" string="Langues Parlées"/>
+                        <field name="education_ids" filter_domain="['|','|',('education_ids.name','ilike',self),('formation_ids.name','ilike',self),('domaine_ids.name','ilike',self)]" string="Education | Formation"/>
+
+                    </xpath>
+                </data>
+        </field>
+     </record>
+
+
+    <record id="inherit_view_hr_job_form" model="ir.ui.view">
+        <field name="name">hr.job.form</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[@name='recruitment']" position="inside">
+
+                <field name="date_cloture" />
+                <field name="publication_state" />
+                <field name="no_of_recruitment"/>
+                <field name="sector"/>
+                <field name="departement"/>
+                <field name="qualification"/>
+                <field name="lieu_travail"/>
+                <field name="context"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[@name='recruitment']" position="after">
+                <group>
+                    <field name="num_ref"/>
+                    <field name="experience"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_job_initialise_date" model="ir.actions.server">
+        <field name="name">initialiser les dates de cloture</field>
+        <field name="model_id" ref="model_hr_job"/>
+        <field name="binding_model_id" ref="model_hr_job"/>
+        <field name="state">code</field>
+        <field name="code">record.initialiser_dates()</field>
+    </record>
+    <record id="hr_job_unpublish_cron" model="ir.cron">
+        <field name="name">Unpublish Job</field>
+        <field name="model_id" ref="model_hr_job"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="state">code</field>
+        <field name="code">model.unpublish_job()</field>
+    </record>
+    <record model="ir.actions.act_window" id="hr_recruitment.crm_case_categ0_act_job">
+        <field name="domain">[("create_date",">=","2022-06-01")]</field>
+    </record>
+    <record model="ir.actions.act_window" id="hr_recruitment.hr_applicant_resumes">
+        <field name="domain">[("create_date",">=","2022-06-01"),("mimetype","in",["application/pdf","application/msword"]),("res_model","like","hr.applicant")]</field>
+    </record>
+</odoo>

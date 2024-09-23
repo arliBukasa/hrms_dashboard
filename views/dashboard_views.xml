@@ -1,0 +1,808 @@
+<odoo>
+    <data>
+        <record id="hr_action_dashboard" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">hr_dashboard</field>
+        </record>
+        <record id="structure_africell" model="hr.payroll.structure">
+            <field name="code">AFRICELL</field>
+            <field name="name">Base for AFRICELL</field>
+
+        </record>
+        <record id="structure_vodacom" model="hr.payroll.structure">
+            <field name="code">VODACOM</field>
+            <field name="name">Base for VODACOM</field>
+
+        </record>
+        <record id="structure_bollore" model="hr.payroll.structure">
+            <field name="code">BOLLORE</field>
+            <field name="name">Base for BOLLORE</field>
+
+        </record>
+        <record id="structure_canal" model="hr.payroll.structure">
+            <field name="code">CANAL +</field>
+            <field name="name">Base for CANAL+</field>
+
+        </record>
+        <record id="structure_orange" model="hr.payroll.structure">
+            <field name="code">ORANGE</field>
+            <field name="name">Base for ORANGE</field>
+
+        </record>
+        <record id="structure_raga" model="hr.payroll.structure">
+            <field name="code">RAGA</field>
+            <field name="name">Base for RAGA</field>
+
+        </record>
+        <record id="structure_path" model="hr.payroll.structure">
+            <field name="code">PATH</field>
+            <field name="name">Base for PATH</field>
+
+        </record>
+        <record id="structure_selton" model="hr.payroll.structure">
+            <field name="code">SELTON</field>
+            <field name="name">Base for SELTON</field>
+
+        </record>
+        <record id="structure_solidaire" model="hr.payroll.structure">
+            <field name="code">SOLIDAIRE</field>
+            <field name="name">Base for SOLIDAIRE</field>
+
+        </record>
+        <record id="structure_turkish" model="hr.payroll.structure">
+            <field name="code">TURKISH</field>
+            <field name="name">Base for STURKISH</field>
+
+        </record>
+
+        <menuitem id="menu_hrms_dashboard" name="Dashboard" action="hr_action_dashboard" web_icon="hrms_dashboard,static/description/dashboard_icon.png" sequence="-100" groups="base.group_user"/>
+    </data>
+    <template id="assets_backend" name="Hr Dashboard assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/hrms_dashboard/static/src/js/hrms_dashboard.js"/>
+            <link rel="stylesheet" href="/hrms_dashboard/static/src/css/hrms_dashboard.css"/>
+        </xpath>
+    </template>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/hrms_dashboard/static/src/css/website.scss"/>
+            <script type="text/javascript" src="/hrms_dashboard/static/src/js/hrms_dashboard_font.js"/>
+            <script type="text/javascript" src="/hrms_dashboard/static/src/js/website_form.js"/>
+        </xpath>    
+    </template>
+
+    <!-- ********************************************************************************************* -->
+    <!-- ************************** REQUISITION **************************** -->
+    <record id="hr_expense_sheet_view_form_hems" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/header" position="replace">
+                <header>
+                    <button name="action_submit_sheet" states="draft" string="Submit to Manager" type="object" class="oe_highlight o_expense_sheet_submit"/>
+                    <button name="approve_expense_sheets" states="submit" string="Approve" type="object" groups="hr_expense.group_hr_expense_user" class="oe_highlight o_expense_sheet_approve"/>
+                    <button name="approvegceo_expense_sheets" states="dg_approve" string=" Gceo Approve" type="object" groups="hr_expense.group_hr_expense_gceo_manager" class="oe_highlight "/>
+                    <button name="approvefinacy_expense_sheets" states="approve" string=" Finance Approve" type="object" groups="hr_expense.group_hr_expense_finance_manager" class="oe_highlight "/>
+                    <button name="approvedg_expense_sheets" states="approve1" string=" DG Approve" type="object" groups="hrms_dashboard.group_hrms_dashboard_dg" class="oe_highlight "/>
+
+                    <button name="action_sheet_move_create" states="approve2" string="Post Journal Entries" type="object" groups="account.group_account_manager" class="oe_highlight o_expense_sheet_post"/>
+                    <button name="%(hr_expense.hr_expense_sheet_register_payment_wizard_action)d" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" attrs="{'invisible': [('state', '!=', 'post')]}" context="{'default_amount': total_amount, 'partner_id': address_id}" groups="account.group_account_manager"/>
+                    <button name="reset_expense_sheets" string="Reset to Draft" type="object" attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', 'not in', ['submit', 'cancel',])]}"/>
+                    <button name="%(hr_expense.hr_expense_refuse_wizard_action)d" states="submit,approve,approve1,dg_approve" context="{'hr_expense_refuse_model':'hr.expense.sheet'}" string="Refuse" type="action" groups="hr_expense.group_hr_expense_user" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,approve1,dg_approve,approve2,post,done"/>
+                </header>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="hr_expense_view_form_hrms" model="ir.ui.view">
+        <field name="name">hr.expense.view.form</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/header" position="replace">
+
+                <header>
+                    <button name="action_submit_expenses" string="Create Report" type="object" class="oe_highlight o_expense_submit" attrs="{'invisible': ['|', ('attachment_number', '&lt;=', 0), ('sheet_id', '!=', False)]}"/>
+                    <widget name="attach_document" string="Attach Document" action="message_post" attrs="{'invisible': ['|', ('attachment_number', '&lt;', 1), ('id','=',False)]}"/>
+                    <widget name="attach_document" string="Attach Document" action="message_post" highlight="1" attrs="{'invisible': ['|',('attachment_number', '&gt;=', 1), ('id','=',False)]}"/>
+                    <button name="action_submit_expenses" string="Create Report" type="object" class="o_expense_submit" attrs="{'invisible': ['|', ('attachment_number', '&gt;=', 1), ('sheet_id', '!=', False)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,reported,approved,approved1,approved2,dg_approved,done,refused"/>
+                    <button name="action_view_sheet" type="object" string="View Report" class="oe_highlight" attrs="{'invisible': [('sheet_id', '=', False)]}"/>
+                </header>
+
+            </xpath>
+            <field name="company_id" position="before">
+                <field name="department_id"/>
+            </field>
+
+        </field>
+    </record>
+    <record id="hr_expense_tree_form_hrms" model="ir.ui.view">
+        <field name="name">hr.expense.tree</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
+        <field name="arch" type="xml">
+
+            <field name="employee_id" position="after">
+                <field name="department_id"/>
+            </field>
+
+        </field>
+    </record>
+    <!-- ************************** FIN REQUISITION **************************** -->
+    <!-- ************************** PAYROLL ************************************** -->
+    <record id="list_hr_timesheet_sheet_lot" model="ir.ui.view">
+        <field name="name">hr_timesheet.lot_list</field>
+        <field name="model">hr.timesheet.lot</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_hr_timesheet_lot_liste" model="ir.actions.act_window">
+        <field name="name">Generer lot des feuilles</field>
+        <field name="res_model">hr.timesheet.lot</field>
+        <field name="view_type">tree</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_hr_timesheet_sheet_lot" model="ir.ui.view">
+        <field name="name">hr_timesheet.lot_view</field>
+        <field name="model">hr.timesheet.lot</field>
+        <field name="arch" type="xml">
+            <form string="Lot des feuilles de temps">
+                <header>
+                    <button icon="fa-cogs" string="Generate" name="creer_lot" type="object" class="oe_highlight" />
+                </header>
+                <group>
+
+                    <field name="name"/>
+                </group>
+                <group colspan="4">
+                    <separator string="Employees" colspan="4"/>
+                    <newline/>
+                    <field name="employee_ids" nolabel="1"/>
+                </group>
+                <group col="4">
+                    <label for="date_start" string="Period"/>
+                    <div>
+                        <field name="client" class="oe_inline"/>
+                        <field name="moi" class="oe_inline"/>
+                        <field name="annee" class="oe_inline"/>
+                        <field name="nombre_jours" class="oe_inline"/>
+                    </div>
+                </group>
+                <separator string="Payslips"/>
+                <field name="timesheet_ids"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_reglages_view">
+        <field name="name">hr.reglages.form</field>
+        <field name="model">hr.reglages</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Paramètres pour la paie">
+                        <field name="name" />
+                        <field name="struct_id" />
+                        <field name="taux"/>
+                        <field name="taux_cnss"/>
+                        <field name="taux_anciennete"/>
+                        <field name="taux_logement"/>
+                    </group>
+                    <group string="Palliers IPR">
+                        <field name="taux_pallier1" />
+                        <field name="taux_pallier2"/>
+                        <field name="taux_pallier3"/>
+                        <field name="taux_pallier4"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_reglages_tree">
+        <field name="name">hr.reglages.tree</field>
+        <field name="model">hr.reglages</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="struct_id" />
+                <field name="name" />
+                <field name="taux"/>
+                <field name="taux_cnss"/>
+                <field name="taux_anciennete"/>
+                <field name="taux_logement"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="hr_heure_import_view">
+        <field name="name">hr.timesheet.heuresimports.form</field>
+        <field name="model">hr.timesheet.heuresimports</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Temps de prestation importe">
+                        <field name="client" />
+                        <field name="moi" />
+                        <field name="annee" />
+                        <field name="employee_id"/>
+                        <field name="nombre_jours"/>
+                        <field name="heure_sup_R1"/>
+                        <field name="heure_sup_R2"/>
+                        <field name="heure_sup_R3"/>
+                        <field name="heure_sup_Nuit" />
+                        <field name="bonus_shop" />
+                        <field name="bonus_call" />
+                        <field name="variable_region" />
+                        <field name="oncall" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="hr_heure_import_tree">
+        <field name="name">hr.timesheet.heuresimports.tree</field>
+        <field name="model">hr.timesheet.heuresimports</field>
+        <field name="arch" type="xml">
+
+            <tree >
+
+                <field name="client" />
+                <field name="moi" />
+                <field name="annee" />
+                <field name="employee_id"/>
+                <field name="nombre_jours"/>
+                <field name="heure_sup_R1"/>
+                <field name="heure_sup_R2"/>
+                <field name="heure_sup_R3"/>
+                <field name="heure_sup_Nuit" />
+                <field name="bonus_shop" />
+                <field name="bonus_call" />
+                <field name="variable_region" />
+                <field name="oncall" />
+                <field name="autres_paiements" />
+
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="hr_payslip_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.form</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+
+            <field name="number" position="after">
+                <field name="mois" />
+                <field name="annee" />
+            </field>
+
+            <field name="worked_days_line_ids" position="after">
+                <form>
+                    <group colspan="8">
+                        <group >
+                            <field name="nombre_jours" />
+                            <field name="heure_sup_R1" />
+                            <field name="heure_sup_R2" />
+                            <field name="heure_sup_R3" />
+                            <field name="heure_sup_Nuit" />
+                        </group>
+                        <group>
+
+                            <field name="autres_paiements" />
+                            <field name="bonus_shop" />
+                            <field name="bonus_call" />
+                            <field name="variable_region" />
+                            <field name="oncall" />
+                        </group>
+                    </group>
+                </form>
+
+            </field>
+            <field name="worked_days_line_ids" position="replace">
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_payslip_view_tree" model="ir.ui.view">
+        <field name="name">hr.payslip.tree</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+
+            <field name="number" position="after">
+                <field name="mois" />
+                <field name="annee" />
+            </field>
+
+            <field name="date_to" position="after">
+
+                <field name="nombre_jours" />
+                <field name="heure_sup_R1" />
+                <field name="heure_sup_R2" />
+                <field name="heure_sup_R3" />
+                <field name="heure_sup_Nuit" />
+                <field name="autres_paiements" />
+                <field name="bonus_shop" />
+                <field name="bonus_call" />
+                <field name="variable_region" />
+                <field name="oncall" />
+                <field name="ipr" />
+                <field name="salaire_base" />
+                <field name="salaire_net" />
+                <field name="salaire_brut" />
+                <field name="salaire_base" />
+            </field>
+        </field>
+    </record>
+    <record id="hr_payslip_run_viewform" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+
+            <field name="date_start" position="before">
+                <group>
+                    <field name="mois" />
+                    <field name="annee" />
+                </group>
+            </field>
+        </field>
+    </record>
+    <record id="view_hr_payslip_by_employees_2" model="ir.ui.view">
+        <field name="name">hr_payroll_payslip_employees</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+        <field name="arch" type="xml">
+            <button icon="fa-cogs" name="compute_sheet" type="object" class="oe_highlight" position="replace">
+                <button icon="fa-cogs" string="Generate" name="compute_sheet_2" type="object" class="oe_highlight" />
+            </button>
+        </field>
+    </record>
+
+    <!-- ************************** FIN PAYROLL ************************************** -->
+    <!-- ************************** HR ************************************** -->
+    <record id="inherit_hr_view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_location']" position="after">
+                <field name="ville"/>
+                <field name="numero_matricule"/>
+                <field name="adresse"/>
+                <field name="numero_matricule"/>
+                <field name="num_cnss"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_employee_headoffice_tree" model="ir.ui.view">
+        <field name="name">hr.employee.headoffice.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <tree string="Employees Head Office" decoration-bf="message_needaction==True">
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="department_id"/>
+                <field name="ville"/>
+                <field name="numero_matricule"/>
+                <field name="num_cnss"/>
+                <field name="name"/>
+                <field name="job_id"/>
+                <field name="work_phone" invisible="1"/>
+                <field name="work_email" invisible="1"/>
+                <field name="parent_id"/>
+                <field name="coach_id" invisible="1"/>
+                <field name="message_needaction" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="inherite_out_view_employee_tree">
+        <field name="name">hr.employee.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="replace">
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="department_id" string="Client"/>
+                <field name="ville"/>
+                <field name="numero_matricule"/>
+                <field name="num_cnss"/>
+                <field name="name"/>
+                <field name="job_id" string="Division"/>
+                <field name="parent_id"/>
+                <field name="work_phone" />
+                <field name="work_email" />
+                <field name="coach_id" invisible="1"/>
+                <field name="message_needaction" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_contract_view">
+        <field name="name">hr.contract.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+
+            <group name="main_info" position="before">
+                <group name="Brut" string="Brut Section">
+                    <label for="salaire_brute"/>
+                    <div class="o_row" name="salaire_brute">
+                        <field name="salaire_brute"/>
+                        <span>/ month</span>
+                    </div>
+                </group>
+            </group>
+            <group name="main_info" position="after">
+                <group>
+                    <field name="nombre_jours"/>
+                    <field name="transport"/>
+                    <field name="logement"/>
+                    <field name="salaire_base"/>
+                    <field name="retenus"/>
+                    <field name="ipr" invisible="1"/>
+                    <field name="cnss" invisible="1"/>
+                </group>
+            </group>
+        </field>
+    </record>
+    <record id="hr_contract_view_tree_salaire" model="ir.ui.view">
+        <field name="name">hr.contract.tree_salaire</field>
+        <field name="model">hr.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Contracts" decoration-bf="message_needaction == True" editable="bottom">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="job_id" string="Division"/>
+                <field name="resource_calendar_id" invisible="1"/>
+                <field name="type_id" string="Type Contrat"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="wage" />
+                <field name="hourly_rate_attendance" />
+                <field name="logement" />
+                <field name="transport" />
+                <field name="salaire_brute" />
+                <field name="salaire_base" />
+                <field name="ipr" />
+                <field name="cnss" />
+                <field name="nombre_jours" />
+                <field name="message_needaction" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <!--Action vue tree pour opération-->
+    <record id= "hr_contract_operation_act_window" model="ir.actions.act_window">
+        <field name="name">Contrats employees</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('company_id','=',"Outsourcing")]</field>
+        <field name="context">{'tree_view_ref':'hrms_dashboard.hr_contract_view_tree_salaire'}</field>
+    </record>
+    <!-- Actions Server-->
+    <record model="ir.actions.server" id="hr_contract_cloture">
+        <field name="name">Cloturer contrats</field>
+        <field name="model_id" ref="model_hr_contract"/>
+        <field name="state">code</field>
+        <field name="code">
+        record._cloturer_contrats()
+        </field>
+    </record>
+    <record id="open_view_employee_list_headoffice" model="ir.actions.act_window">
+        <field name="name">Employees Head office</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('department_id.company_id','=',"Head Office")]</field>
+        <field name="view_id" eval="False"/>
+        <field name="context">{'tree_view_ref':'hrms_dashboard.view_employee_headoffice_tree'}</field>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new employee
+            </p>
+            <p>
+                With just a quick glance on the Odoo employee screen, you
+                can easily find all the information you need for each person;
+                contact data, job position, availability, etc.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_open_view_employee_list_headoffice" action="hrms_dashboard.open_view_employee_list_headoffice" parent="hr.menu_hr_root" sequence="3" />
+
+    <record id="hr.open_view_employee_list_my" model="ir.actions.act_window">
+        <field name="domain">[('department_id.company_id','=',"Outsourcing")]</field>
+        <field name="context"></field>
+    </record>
+    <record id="hr_contract.action_hr_contract" model="ir.actions.act_window">
+        <field name="domain">[('company_id','=',"Outsourcing")]</field>
+    </record>
+    <record id="hr.open_module_tree_department" model="ir.actions.act_window">
+        <field name="domain">[('company_id','=',"Outsourcing")]</field>
+    </record>
+    <!--==========action departements head office============-->
+    <record id="open_module_tree_department_headoffice" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">hr.department</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="hr.view_department_filter"/>
+        <field name="domain">[('company_id','=',"Head Office")]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new client
+            </p>
+            <p>
+                Odoo's client structure is used to manage all documents
+                related to employees by departments: expenses, timesheets,
+                leaves, recruitments, etc.
+            </p>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.server" id="hr_contract_renew">
+        <field name="name">Marquer à Renouveler</field>
+        <field name="model_id" ref="model_hr_contract"/>
+        <field name="state">code</field>
+        <field name="code">
+        record._marquer_arenouveler()
+        </field>
+    </record>
+    <record model="ir.actions.server" id="hr_employee_archive">
+        <field name="name">Archiver les Agents</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">
+        record._archiver()
+        </field>
+    </record>
+    <record id="ir_cron_hr_employee_archive" model="ir.cron">
+        <field name="name">HR Employee: Archiver les Agents contrats Expirés</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model._archiver()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!-- Expired Soon -->
+    <record id="ir_cron_actualiser_etats_contrats" model="ir.cron">
+        <field name="name">HR Contract: update states</field>
+        <field name="model_id" ref="model_hr_contract"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model.cloturer_contrat()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <record id="ir_cron_notification_fin_contrat" model="ir.cron">
+        <field name="name">HR Contract: Notification fin contrat</field>
+        <field name="model_id" ref="model_hr_contract"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model.notification_fin_contrat()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!-- 
+    <record id="ir_cron_notification_fin_contrat" model="ir.cron">
+            <field name="name">Notification fin contrat</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'hr.contract'" name="model"/>
+            <field eval="'notification_fin_contrat'" name="function"/>
+        </record> -->
+
+    <!--  Contrants Expirants -->
+
+    <record id="act_hr_contract_expirant" model="ir.actions.act_window">
+        <field name="name">Contracts en voie d'expirer</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('state','=','pending'),('company_id','=',"Outsourcing")]</field>
+
+    </record>
+    <record id="act_hr_contract_expire" model="ir.actions.act_window">
+        <field name="name">Contracts Expirés</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('state','=','close'),('company_id','=',"Outsourcing")]</field>
+
+    </record>
+    <record id="act_hr_contract_encours" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('state','in',['draft','open']),('company_id','=',"Outsourcing")]</field>
+
+    </record>
+
+    <menuitem id="hr_menu_contract_encours" name="Contracts En Cours" action="act_hr_contract_encours" parent="hr.menu_hr_root" sequence="4" groups="hr_contract.group_hr_contract_manager"/>
+    <menuitem id="hr_menu_contract_expire" name="Contracts Expirés" action="act_hr_contract_expire" parent="hr.menu_hr_root" sequence="4" groups="hr_contract.group_hr_contract_manager"/>
+    <menuitem id="hr_menu_contract_expirant" name="Contracts Expirants" action="act_hr_contract_expirant" parent="hr.menu_hr_root" sequence="4" groups="hr_contract.group_hr_contract_manager"/>
+
+    <!--Hr Department Inherit Kanban view-->
+    <!--  Contrants Expirants -->
+    <record id="act_hr_contract_expirant2" model="ir.actions.act_window">
+        <field name="name">Contracts Expirants</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="hrms_dashboard.hr_contract_view_tree_salaire"/>
+        <field name="domain">[('state','=','pending')]</field>
+        <field name="context">{
+                "search_default_department_id": [active_id],
+                "default_department_id": active_id}</field>
+    </record>
+    <!--  Contrants Encours -->
+    <record id="act_hr_contract_encours2" model="ir.actions.act_window">
+        <field name="name">Contracts Encours</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="hrms_dashboard.hr_contract_view_tree_salaire"/>
+        <field name="domain">[('state','in',['draft','open'])]</field>
+        <field name="context">{
+                "search_default_department_id": [active_id],
+                "default_department_id": active_id}</field>
+    </record>
+    <record id="hr_department_expirant_view_kanban" model="ir.ui.view">
+        <field name="name">hr.department.expirant.kanban.inherit</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.hr_department_view_kanban"/>
+        <field name="groups_id" eval="[(4,ref('hr_holidays.group_hr_holidays_user'))]"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//templates" position="before">
+                    <field name="contrats_expirant"/>
+                    <field name="contrats_encours"/>
+                </xpath>
+                <xpath expr="//div[hasclass('o_kanban_primary_left')]" position="inside">
+
+                    <button t-if="record.contrats_encours.raw_value > 0 " class="btn btn-info" style="margin-top:2px;" name="%(act_hr_contract_encours2)d" type="action">Contrats Encours: <strong style="color:#fff001;">
+                            <field name="contrats_encours"/>
+                        </strong>
+                    </button>
+
+                </xpath>
+                <xpath expr="//div[hasclass('o_kanban_primary_right')]" position="inside">
+                    <button t-if="record.contrats_expirant.raw_value > 0 " class="btn btn-danger" name="%(act_hr_contract_expirant2)d" type="action">Contrats Expirants: <strong style="color:#fff001;">
+                        <field name="contrats_expirant"/>
+                        </strong>
+                    </button>
+                </xpath>
+            </data>
+        </field>
+</record>
+
+<record model="ir.ui.view" id="view_department_structure_form">
+<field name="name">hr.department.form</field>
+<field name="model">hr.department</field>
+<field name="inherit_id" ref="hr.view_department_form"/>
+<field name="arch" type="xml">
+    <xpath expr="//field[@name='parent_id']" position="after">
+        <field name="structure_id"/>
+    </xpath>
+</field>
+</record>
+
+<record id="view_partner_form_inherit" model="ir.ui.view">
+<field name="name">res.partner.form</field>
+<field name="model">res.partner</field>
+<field name="inherit_id" ref="base.view_partner_form"/>
+<field name="priority" eval="1"/>
+<field name="arch" type="xml">
+    <page name='sales_purchases' position="after">
+        <page name='familly' string="Imformations famille">
+
+            <tree>
+                <field name="membres"/>
+            </tree>
+
+        </page>
+        <page name='products' string="Imformations Prouits">
+            <field name="achats">
+
+                <tree create="true" delete="true" edit="true" editable="bottom">
+                    <field name="produit"/>
+                    <field name="date_achat"/>
+                    <field name="quantite"/>
+                </tree>
+
+            </field>
+        </page>
+    </page>
+
+</field>
+</record>
+
+<record id="hr_reglages_action" model="ir.actions.act_window">
+<field name="name">Reglages</field>
+<field name="type">ir.actions.act_window</field>
+<field name="res_model">hr.reglages</field>
+<field name="view_type">form</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="hr_prestations_action" model="ir.actions.act_window">
+<field name="name">Importer prestations</field>
+<field name="type">ir.actions.act_window</field>
+<field name="res_model">hr.timesheet.heuresimports</field>
+<field name="view_type">form</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record model="ir.cron" id="verif_fin_contrat">
+<field name="name">Verifier fin contrats</field>
+<field name="model_id" ref="model_hr_expense_sheet"/>
+<field name="state">code</field>
+<field name="code">
+		        model.notification_fin_contrat()
+</field>
+</record>
+<record id="achats_view_tree" model="ir.ui.view">
+<field name="name">achats.tree</field>
+<field name="model">achats</field>
+<field name="arch" type="xml">
+    <tree>
+        <field name="client_id"/>
+        <field name="produit"/>
+        <field name="date_achat"/>
+        <field name="quantite"/>
+    </tree>
+</field>
+</record>
+
+<!--******************************************* recrutement*******************************-->
+<!--<record id="model_name_view_kanban" model="ir.ui.view">
+<field name="name">model.name.view.kanban</field>
+<field name="model">model.name</field>
+<field name="arch" type="xml">
+    <kanban>
+        <templates>
+            <t t-name="kanban-box">
+
+            </t>
+        </templates>
+    </kanban>
+</field>
+</record>-->
+<menuitem id="menu_reglages" name="HR Setting" web_icon="hrms_dashboard,static/description/settings.png" sequence="18"/>
+<menuitem id="menu_hr_contract_operations" name="contrats" action="hr_contract_operation_act_window" sequence="1" parent="menu_reglages"/>
+<menuitem id="menu_imports_prestaions" name="importer prestations" action="hr_prestations_action" sequence="17" parent="menu_reglages"/>
+<menuitem id="menu_reglage_payroll" name="Setting payroll" action="hr_reglages_action" sequence="17" parent="menu_reglages" icon="fa-wrench"/>
+<menuitem action="open_module_tree_department_headoffice" id="menu_hr_department_headoffice" parent="hr.menu_hr_root" sequence="2" groups="hr.group_hr_user"/>
+
+<menuitem action="action_hr_timesheet_lot_liste" id="menu_hr_timesheet_lot_list" parent="menu_reglages" />
+
+
+</odoo>

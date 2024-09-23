@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+	<record id="formatpapier_A4" model="report.paperformat">
+		<field name="name">A421x29.7</field>
+		<field name="default" eval="True" />
+		<field name="format">custom</field>
+		<field name="page_height">290</field>
+		<field name="page_width">210</field>
+		<field name="orientation">Portrait</field>
+		<field name="margin_top">0</field>
+		<field name="margin_bottom">0</field>
+		<field name="margin_left">0</field>
+		<field name="margin_right">0</field>
+		<field name="header_line" eval="False" />
+		<field name="header_spacing">0</field>
+		<field name="dpi">72</field>
+	</record>
+
+	<report id="report_application" model="hr.applicant" string="CV applicant" name="hrms_dashboard.application_cv" report_type="qweb-pdf" paperformat="hrms_dashboard.formatpapier_A4" menu="True"/>
+
+	<template id="hrms_dashboard.application_cv">
+				<t t-call="web.html_container">
+					<t t-foreach="docs" t-as="o">
+						<t t-call="web.internal_layout">
+							<div style="width:100%; ">
+								<t>
+									<style>
+									.example-css-class {
+										background-color: red;
+									}
+									.tbblock{
+										border: #9f9f9f;
+										width:100%;
+										}
+									body {
+										margin: 0;
+										font-family: Arial, Helvetica, sans-serif;
+										}
+
+									/* Style the side navigation */
+										.sidenav {
+										width:100%;
+										height:100%;
+										background-image: url('/hrms_dashboard/static/src/img/Bg_nav.png');
+										background-size: cover;
+										}
+									/* Style the side navigation */
+										.sidenav2 {
+										width: auto;
+										margin-top: 10px;
+										margin-right: 10px;
+										text-align: left;
+										}
+										 .sidenav3 {
+										 text-align: left;
+										}
+										h1 {
+											text-align: left;
+										}
+
+									/* Side navigation links */
+										.sidenav a {
+										color: white;
+										padding: 16px;
+										text-decoration: none;
+										display: block;
+										}
+
+										/* Change color on hover */
+										.sidenav a:hover {
+										background-color: #ddd;
+										color: black;
+										}
+
+										/* Style the content */
+										.content {
+										margin-left: 200px;
+										padding-left: 20px;
+										}
+									</style>
+								</t>
+								<table style="width:100%;height:100px;" class="table table-sm o_main_table">
+									<tr style="width:100%;height:100%;padding-left:1%;">
+
+										<td  style="width:35%;min-height:842px;padding-left:1%;background-image: url('/hrms_dashboard/static/src/img/Bg_nav.png');background-size: 842px;background-repeat: repeat-y;">
+											<!--<div class="sidenav">-->
+
+														<table  t-attf-style="width:98%;height:100%;min-height:100%;border:0px;">
+
+														   <tr style="height:20%;text-align:center;">
+															   <td colspan="2">
+																	<div class="" style="margin-top:40px; align:justify;">
+																		<!--<t if ="o.image">
+																			<img t-if="o.image" t-att-src="image_data_uri(o.image)" style="width:250px;"/>
+																		</t>-->
+																		<t>
+																			<t t-if="o.gender == 'male'">
+																				<img src="/hrms_dashboard/static/src/img/hm.png" style="width:250px;"/>
+																			</t>
+																			<t t-if="not o.gender == 'male'">
+																				<img src="/hrms_dashboard/static/src/img/fm.png" style="width:250px;"/>
+																			</t>
+																		</t>
+
+																		<br/>
+																		<br/>
+																	</div>
+															   </td>
+															</tr>
+															<!--<tr style="">
+																<div class="">
+																	<img t-if="o.image" t-att-src="image_data_uri(o.image)" style="width:200px;height:200px;margin-top: 200px;"/>
+
+																	<br/>
+																</div>
+															</tr>-->
+															<tr align="jutify" >
+																<td colspan="2">
+																	<div class="" style="tex-align:justify;">
+																		<span style="font-size: 26px;color:#ffffff;text-align:justify;" >
+																			<strong t-esc="o.partner_last_name"/> <strong t-esc="o.partner_name"/> <span> </span> <strong t-esc="o.partner_first_name"/><br/>
+																		</span>
+																		<span style="font-size: 16px;color:#00b0f0;text-align:justify;" >
+																			<font> Profil de candidat |</font> <strong t-esc="o.date_of_birth"/><font> ans</font>
+																		</span>
+																		<br/>
+																		<br/>
+																	</div>
+																</td>
+															</tr>
+															<tr style="">
+																<td><img src="/hrms_dashboard/static/src/img/apropos.png" style="width:50px;"/></td>
+																<td>
+																	<strong>
+																		<span style="font-size: 26px;color:#ffffff;text-align:justify;">A PROPOS</span>
+																	</strong>
+																</td>
+															</tr>
+															<tr style="">
+																<td colspan="2">
+																<p style="color:#ffffff;">
+																	Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text
+
+																</p>
+																</td>
+
+															</tr>
+															<tr style="">
+																<td><img src="/hrms_dashboard/static/src/img/phone.png" style="width:50px;"/></td>
+																<td>
+																	<strong>
+																		<span style="font-size: 26px;color:#ffffff;text-align:justify;">CONTACTS</span>
+																	</strong>
+																</td>
+															</tr>
+															<tr style="">
+																<td colspan="2">
+																<p style="color:#ffffff;">
+																	<span>+243xxxxxxxxx</span><br/>
+																	<span>+243xxxxxxxxx</span><br/>
+																	<span t-esc="o.user_email"/>
+																	<span t-esc="o.adresse"/>
+
+																</p>
+																</td>
+
+															</tr>
+															<tr style="">
+																<td><img src="/hrms_dashboard/static/src/img/competence.png" style="width:50px;"/></td>
+																<td>
+																	<strong>
+																		<span style="font-size: 26px;color:#ffffff;text-align:justify;">COMPETENCE</span>
+																	</strong>
+																</td>
+															</tr>
+															<!--************************* LANGUES****************************-->
+															<tr style="">
+																<td colspan="2"><strong><span style="color:#00b0f0;">Langues :</span></strong> </td>
+															</tr>
+															<t t-foreach="o.langue_ids" t-as="langues">
+																<tr style="">
+																	<td ><span style="color:#ffffff;" t-esc="langues.language_id.name"/> </td>
+																	<td >
+
+																		<div style="background-color:#ffffff; width:200px;height:7px;">
+
+																			<div t-attf-style="background-color:#92d050;width:{{(langues.level)*2}}px;height:7px;">
+
+																			</div> <span style="color:#ffffff;" t-esc="langues.level"/>
+
+																		</div>
+
+																	</td>
+																</tr>
+
+															</t>
+															<!--************************* LANGUES****************************-->
+															<tr style="">
+																<td colspan="2"><strong><span style="color:#00b0f0;">Domaines de compétence :</span></strong> </td>
+															</tr>
+															<t t-foreach="o.competence_ids" t-as="domaines">
+																<tr style="">
+																	<td ><span style="color:#ffffff;" t-esc="domaines.competence_id.name"/> </td>
+																	<td >
+
+																		<div style="background-color:#ffffff; width:200px;height:7px;">
+
+																			<div t-attf-style="background-color:#92d050;width:{{(domaines.level)*2}}px;height:7px;">
+
+																			</div> <span style="color:#ffffff;" t-esc="domaines.level"/>
+
+																		</div>
+
+																	</td>
+																</tr>
+
+															</t>
+															<tr style="height:100%;text-align: center;border:0px;">
+																<td colspan="2">
+																	<div class="" style="min-height:100%;">
+
+																	</div>
+																</td>
+															</tr>
+															<tr style="height:10%;text-align: center;">
+																<td colspan="2">
+																	<div class="" style="">
+																			<img src="/hrms_dashboard/static/src/img/logo_ben.png" style="width:150px;"/>
+																	</div>
+																</td>
+															</tr>
+
+
+													</table>
+
+											<!--</div>-->
+										</td>
+										<td rowspan="2" style="width:65%;height:100%;padding-right:1%;background-image: url('/hrms_dashboard/static/src/img/Bg_corps.png');background-size: cover;">
+											<!--<div class="sidenav">-->
+												<table  style="width:98%;height:100%;">
+
+												   <tr style="text-align:justify;">
+													   <td>
+
+														   <table class="tbblock">
+																<tr style="">
+																	<td><img src="/hrms_dashboard/static/src/img/experience.png" style="width:50px;"/></td>
+																	<td colspan="3">
+																		<strong>
+																			<span style="font-size: 24px;color:#033163;text-align:justify;">EXPERIENCE PROFESSIONELLE</span>
+																		</strong>
+																	</td>
+																</tr>
+
+															   <t t-foreach="o.experience_ids" t-as="experiences">
+																	<th style="text-align:left;backgroung-color:#e4e3e3;">
+																		<td colspan="" style="text-align:left;"><strong><span style="backgroung-color:#e4e3e3;">Détail du poste</span></strong></td>
+																		<td colspan="" style="text-align:left;"><strong><span style="backgroung-color:#e4e3e3;"></span></strong></td>
+																		<td colspan="" style="text-align:left;"><strong><span style="backgroung-color:#e4e3e3;">Entreprise</span></strong></td>
+																		<td colspan="" style="text-align:left;"><strong><span style="backgroung-color:#e4e3e3;"></span></strong></td>
+																	</th>
+																	<tr style="">
+																		<td colspan="2"><span style="color:#818181;" t-esc="experiences.name"/> </td>
+																		<td colspan="2"><strong><span style="color:#818181;" t-esc="experiences.entreprise_id.name"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td ><strong><span style="color:#818181;" >Date de debut</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="experiences.date_debut"/></strong></td>
+																		<td ><strong><span style="color:#818181;" >Date de fin</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="experiences.date_fin"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td colspan="2"><strong><span style="color:#818181;" >Tâches réalisées</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" >Réference :</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="experiences.reference"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td colspan="4"><font style="color:#818181;" t-esc="experiences.taches"/> </td>
+																	</tr>
+																	<tr style="">
+																		<td colspan="4"><strong><span style="color:#818181;"/></strong></td>
+																	</tr>
+																</t>
+															   <tr style="">
+																	<td><img src="/hrms_dashboard/static/src/img/education.png" style="width:50px;"/></td>
+																	<td colspan="3">
+																		<strong>
+																			<span style="font-size: 24px;color:#033163;text-align:justify;">EDUCATION</span>
+																		</strong>
+																	</td>
+																</tr>
+
+															   <t t-foreach="o.education_ids" t-as="educations">
+																	<th style="text-align:left;backgroung-color:#e4e3e3;">
+																		<td colspan="2"><strong><span style="backgroung-color:#e4e3e3;">Domaine d'Etude</span></strong></td>
+																		<td colspan="2"><strong><span style="backgroung-color:#e4e3e3;">Institution</span></strong></td>
+																	</th>
+																	<tr style="">
+																		<td colspan="2"><span style="color:#818181;" t-esc="educations.name"/> </td>
+																		<td colspan="2"><strong><span style="color:#818181;" t-esc="educations.institution"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td ><strong><span style="color:#818181;" >Date de debut</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="educations.date_debut"/></strong></td>
+																		<td ><strong><span style="color:#818181;" >Date de fin</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="educations.date_fin"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td colspan="2"><strong><span style="color:#818181;" >Qualification:</span></strong> </td>
+																		<td colspan="2"><strong><span style="color:#818181;" t-esc="educations.qualification"/></strong></td>
+																	</tr>
+
+																	<tr style="">
+																		<td colspan="4"><strong><span style="color:#818181;"/></strong></td>
+																	</tr>
+																</t>
+															   <!--************************* formation ***************************-->
+															   <tr style="">
+																	<td><img src="/hrms_dashboard/static/src/img/formation.png" style="width:50px;"/></td>
+																	<td colspan="3">
+																		<strong>
+																			<span style="font-size: 24px;color:#033163;text-align:justify;">FORMATION</span>
+																		</strong>
+																	</td>
+																</tr>
+
+															   <t t-foreach="o.formation_ids" t-as="formations">
+																	<th style="text-align:left;backgroung-color:#e4e3e3;">
+																		<td colspan="2"><strong><span style="backgroung-color:#e4e3e3;">Domaine de Formation</span></strong></td>
+																		<td colspan="2"><strong><span style="backgroung-color:#e4e3e3;">Institution</span></strong></td>
+																	</th>
+																	<tr style="">
+																		<td colspan="2"><span style="color:#818181;" t-esc="formations.name"/> </td>
+																		<td colspan="2"><strong><span style="color:#818181;" t-esc="formations.institution"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td ><strong><span style="color:#818181;" >Date de debut</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="formations.date_debut"/></strong></td>
+																		<td ><strong><span style="color:#818181;" >Date de fin</span></strong> </td>
+																		<td ><strong><span style="color:#818181;" t-esc="formations.date_fin"/></strong></td>
+																	</tr>
+																	<tr style="">
+																		<td colspan="2"><strong><span style="color:#818181;" >Qualification:</span></strong> </td>
+																		<td colspan="2"><strong><span style="color:#818181;" t-esc="formations.qualification"/></strong></td>
+																	</tr>
+
+																	<tr style="">
+																		<td colspan="4"><strong><span style="color:#818181;"/></strong></td>
+																	</tr>
+																</t>
+															</table>
+
+														</td>
+
+													</tr>
+
+											</table>
+											<!--</div>-->
+										</td>
+
+
+									</tr>
+								</table>
+
+							</div>
+						</t>
+
+					</t>
+				</t>
+	</template>
+
+</odoo>  
+        
+      

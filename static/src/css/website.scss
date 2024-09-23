@@ -1,0 +1,102 @@
+///
+/// This file regroups the website design rules.
+///
+.dot-red {
+    height: 25px;
+    width: 25px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    display: inline-block;
+    float:right;
+  }
+
+  .dot-green {
+    height: 25px;
+    width: 25px;
+    background-color: #00b050;
+    border-radius: 50%;
+    display: inline-block;
+    float:right;
+  }
+  .dot-yellow {
+    height: 25px;
+    width: 25px;
+    background-color: #ffc000;
+    border-radius: 50%;
+    display: inline-block;
+    float:right;
+  }
+  .dot_green_simple {
+    height: 20px;
+    width: 20px;
+    background-color: #00b050;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot_yellow_simple {
+    height: 20px;
+    width: 20px;
+    background-color: #ffc000;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot_red_simple {
+    height: 20px;
+    width: 20px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .hrg {
+      border: none;
+      border-bottom: 4px solid #00b050;
+      color: #00b050;
+      overflow: visible;
+      text-align: left;
+      width: 100%;
+  }
+  .hry {
+      border: none;
+      border-bottom: 4px solid #ffc000;
+      color: #00b050;
+      overflow: visible;
+      text-align: left;
+      width: 50%;
+  }
+  .hrr {
+      border: none;
+      border-bottom: 4px solid #ff0000;
+      color: #00b050;
+      overflow: visible;
+      text-align: left;
+      width: 25%;
+  }
+  .txt1{
+      font-family: "Century Gothic", serif;
+      font-size:16px;
+      color:#fff;
+      margin-left:15px;
+  }
+ 
+  
+  @media screen and (min-width: 601px) {
+    .icon-socio {
+      height: 50px;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .icon-socio {
+      height: 15px;
+    }
+  }
+  
+#content-desktop {display: block;}
+#content-mobile {display: none;}
+
+@media screen and (max-width: 768px) {
+
+#content-desktop {display: none;}
+#content-mobile {display: block;}
+
+}
