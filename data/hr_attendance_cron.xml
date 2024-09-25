@@ -12,7 +12,7 @@
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="True"/>
-            <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 23:59:00')"/>
+            <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 11:59:00')"/>
         </record>
 
 </odoo>
