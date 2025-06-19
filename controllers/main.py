@@ -369,7 +369,14 @@ class Api_recrutement(http.Controller):
     def show_membres(self, **kwargs):
 
         return Response(json.dumps({"Plantes": [{"name": 'monstera',"category": 'classique',"prix":15,"id": '1ed',"isBestSale": True,"light": 2,"water": 3,"cover": "monstera"}]}), content_type='application/json')
-
+    
+    #heriter la route /jobs et rediriger vers bensizwe.com/jobs
+    @http.route("/jobs", auth="public", type="http", methods=["GET", "POST"], website=False,
+                csrf=False)
+    def show_jobs(self, **kwargs):
+        # Redirect to an external URL
+        return http.local_redirect("https://bensizwe.com/jobs", code=302)
+        
     @http.route("/reactApp", auth="public", type="http", methods=["GET", "POST"], website=False,
                 csrf=False)
     def show_react(self, **kwargs):
