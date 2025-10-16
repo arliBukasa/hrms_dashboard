@@ -691,7 +691,9 @@ class Contract(models.Model):
                 logging.info(imposable*taux)
                 
                 if(imposable*taux>3600001):
-                    ipr=((4860.0+ 245699.85 +539999.70)+(((imposable*taux)-3600001)*reglage.taux_pallier4))           
+                    ipr=((4860.0+ 245699.85 +539999.70)+(((imposable*taux)-3600001)*reglage.taux_pallier4))
+                    if (ipr>imposable*taux*0.3):
+                        ipr=imposable*taux*0.3
                 elif (imposable*taux>1800001):
                     ipr= ((4860.0+245699.85)+((imposable*taux)-1800001)*reglage.taux_pallier3)
                 elif((imposable*taux)>162001):
@@ -699,6 +701,12 @@ class Contract(models.Model):
                 elif(imposable*taux<162001):
                     ipr= imposable*taux*reglage.taux_pallier1
         
+                logging.info("================== reduction de l'ipr de 2% pour chaque dependant ======================")
+                if self.employee_id.children:
+                    if self.employee_id.children<10:
+                        ipr=ipr-(ipr*0.02*self.employee_id.children)
+                    else:
+                        ipr=ipr-(ipr*0.2*9)
                 net=brute-(ipr/taux)-inss
                 logging.info("================== les valeurs qui varient: ======================")
                 logging.info("ipr:")
